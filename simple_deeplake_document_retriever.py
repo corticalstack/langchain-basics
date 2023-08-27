@@ -27,24 +27,19 @@ dataset_path = f"hub://{my_activeloop_org_id}/{my_activeloop_dataset_name}"
 db = DeepLake(dataset_path=dataset_path, embedding=embeddings)
 
 retrieval_qa = RetrievalQA.from_chain_type(
-	llm=llm,
-	chain_type="stuff",
-	retriever=db.as_retriever()
+    llm=llm, chain_type="stuff", retriever=db.as_retriever()
 )
 
 tools = [
     Tool(
         name="Retrieval QA System",
         func=retrieval_qa.run,
-        description="Useful for answering questions."
+        description="Useful for answering questions.",
     ),
 ]
 
 agent = initialize_agent(
-	tools,
-	llm,
-	agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-	verbose=True
+    tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True
 )
 
 response = agent.run("When was Napoleone born?")

@@ -20,9 +20,7 @@ its responses more coherent and relevant.
 """
 llm = OpenAI(model="text-davinci-003", temperature=0)
 conversation = ConversationChain(
-    llm=llm,
-    verbose=True,
-    memory=ConversationBufferMemory()
+    llm=llm, verbose=True, memory=ConversationBufferMemory()
 )
 
 # Start the conversation

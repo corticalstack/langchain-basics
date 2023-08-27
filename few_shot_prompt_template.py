@@ -10,11 +10,9 @@ load_dotenv()
 examples = [
     {
         "query": "What's the weather like?",
-        "answer": "It's raining cats and dogs, better bring an umbrella!"
-    }, {
-        "query": "How old are you?",
-        "answer": "Age is just a number, but I'm timeless."
-    }
+        "answer": "It's raining cats and dogs, better bring an umbrella!",
+    },
+    {"query": "How old are you?", "answer": "Age is just a number, but I'm timeless."},
 ]
 
 # create an example template
@@ -25,8 +23,7 @@ AI: {answer}
 
 # create a prompt example from above template
 example_prompt = PromptTemplate(
-    input_variables=["query", "answer"],
-    template=example_template
+    input_variables=["query", "answer"], template=example_template
 )
 
 # now break our previous prompt into a prefix and suffix
@@ -48,7 +45,7 @@ few_shot_prompt_template = FewShotPromptTemplate(
     prefix=prefix,
     suffix=suffix,
     input_variables=["query"],
-    example_separator="\n\n"
+    example_separator="\n\n",
 )
 
 # load the model

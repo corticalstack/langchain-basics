@@ -15,13 +15,11 @@ embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
 # create our documents
 texts = [
     "Napoleon Bonaparte was born in 15 August 1769",
-    "Louis XIV was born in 5 September 1638"
+    "Louis XIV was born in 5 September 1638",
 ]
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 docs = text_splitter.create_documents(texts)
 
-# create Deep Lake dataset
-# TODO: use your organization id here. (by default, org id is your username)
 my_activeloop_org_id = os.environ["ACTIVELOOP_ORG_ID"]
 my_activeloop_dataset_name = "french_history"
 dataset_path = f"hub://{my_activeloop_org_id}/{my_activeloop_dataset_name}"

@@ -23,17 +23,19 @@ search = GoogleSearchAPIWrapper()
 
 tools = [
     Tool(
-        name = "google-search",  # unique identifier for the tool
+        name="google-search",  # unique identifier for the tool
         func=search.run,
-        description="useful for when you need to search google to answer questions about current events"
+        description="useful for when you need to search google to answer questions about current events",
     )
 ]
 
-agent = initialize_agent(tools, 
-                         llm, 
-                         agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, # uses the ReAct framework to decide which tool to use based only on the tool's description.
-                         verbose=True, # Detailed infromation about what the agent is doing
-                         max_iterations=6)  # Prevent infinite loops
+agent = initialize_agent(
+    tools,
+    llm,
+    agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,  # uses the ReAct framework to decide which tool to use based only on the tool's description.
+    verbose=True,  # Detailed infromation about what the agent is doing
+    max_iterations=6,
+)  # Prevent infinite loops
 
 response = agent("Was India able to successfully land at the South Pole of the Moon?")
-print(response['output'])
+print(response["output"])

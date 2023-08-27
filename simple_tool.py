@@ -45,14 +45,13 @@ application.
 llm = OpenAI(model="text-davinci-003", temperature=0)
 
 prompt = PromptTemplate(
-    input_variables=["query"],
-    template="Write a summary of the following text: {query}"
+    input_variables=["query"], template="Write a summary of the following text: {query}"
 )
 
 summarize_chain = LLMChain(llm=llm, prompt=prompt)
 
 # Next, we create the tools that our agent will use
-# “GOOGLE_API_KEY” and “GOOGLE_CSE_ID” OS env variables set 
+# “GOOGLE_API_KEY” and “GOOGLE_CSE_ID” OS env variables set
 # to be able to use Google Search via API
 search = GoogleSearchAPIWrapper()
 
@@ -60,23 +59,22 @@ tools = [
     Tool(
         name="Search",
         func=search.run,
-        description="useful for finding information about recent events"
+        description="useful for finding information about recent events",
     ),
     Tool(
-       name='Summarizer',
-       func=summarize_chain.run,
-       description='useful for summarizing texts'
-    )
+        name="Summarizer",
+        func=summarize_chain.run,
+        description="useful for summarizing texts",
+    ),
 ]
 
 # Create our agent that leverages two tools
 agent = initialize_agent(
-    tools,
-    llm,
-    agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
-    verbose=True  
+    tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True
 )
 
 # Run the agent with a question about summarizing the latest news about the Indian Lunar Lander
-response = agent("What's the latest news about the Indian Lunar Lander? Then please summarize the results.")
-print(response['output'])
+response = agent(
+    "What's the latest news about the Indian Lunar Lander? Then please summarize the results."
+)
+print(response["output"])
