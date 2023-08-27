@@ -1,0 +1,35 @@
+# Text Loader
+from langchain.document_loaders import TextLoader
+loader = TextLoader('file_path.txt')
+documents = loader.load()
+
+
+# PyPDFLoader (PDF)
+from langchain.document_loaders import PyPDFLoader
+loader = PyPDFLoader("example_data/layout-parser-paper.pdf")
+pages = loader.load_and_split()
+
+print(pages[0])
+
+
+# SeleniumURLLoader (URL)
+from langchain.document_loaders import SeleniumURLLoader
+
+urls = [
+    "https://www.youtube.com/watch?v=TFa539R09EQ&t=139s",
+    "https://www.youtube.com/watch?v=6Zv6A_9urh4&t=112s"
+]
+
+loader = SeleniumURLLoader(urls=urls)
+data = loader.load()
+
+print(data[0])
+
+
+# Google Drive loader
+from langchain.document_loaders import GoogleDriveLoader
+loader = GoogleDriveLoader(
+    folder_id="your_folder_id",
+    recursive=False  # Optional: Fetch files from subfolders recursively. Defaults to False.
+)
+docs = loader.load()
