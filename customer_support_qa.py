@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 """
@@ -27,16 +28,18 @@ from langchain.document_loaders import SeleniumURLLoader
 from langchain import PromptTemplate
 
 # we'll use information from the following articles
-urls = ['https://beebom.com/what-is-nft-explained/',
-        'https://beebom.com/how-delete-spotify-account/',
-        'https://beebom.com/how-download-gif-twitter/',
-        'https://beebom.com/how-use-chatgpt-linux-terminal/',
-        'https://beebom.com/how-delete-spotify-account/',
-        'https://beebom.com/how-save-instagram-story-with-music/',
-        'https://beebom.com/how-install-pip-windows/',
-        'https://beebom.com/how-check-disk-usage-linux/']
+urls = [
+    "https://beebom.com/what-is-nft-explained/",
+    "https://beebom.com/how-delete-spotify-account/",
+    "https://beebom.com/how-download-gif-twitter/",
+    "https://beebom.com/how-use-chatgpt-linux-terminal/",
+    "https://beebom.com/how-delete-spotify-account/",
+    "https://beebom.com/how-save-instagram-story-with-music/",
+    "https://beebom.com/how-install-pip-windows/",
+    "https://beebom.com/how-check-disk-usage-linux/",
+]
 
-# We load the documents from the provided URLs and split them into chunks using the CharacterTextSplitter 
+# We load the documents from the provided URLs and split them into chunks using the CharacterTextSplitter
 # with a chunk size of 1000 and no overlap:
 
 # use the selenium scraper to load the documents
@@ -72,7 +75,6 @@ db.add_documents(docs)
 query = "how to check disk usage in linux?"
 docs = db.similarity_search(query)
 print(docs[0].page_content)
-
 
 
 """

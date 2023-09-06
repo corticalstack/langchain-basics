@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 """
@@ -27,8 +28,6 @@ from langchain.chains import ConversationChain
 llm = OpenAI(model_name="text-davinci-003", temperature=0)
 
 conversation = ConversationChain(
-    llm=llm, 
-    verbose=True, 
-    memory=ConversationBufferMemory()
+    llm=llm, verbose=True, memory=ConversationBufferMemory()
 )
 conversation.predict(input="Hello!")

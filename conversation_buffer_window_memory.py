@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 """
@@ -41,15 +42,13 @@ Visitor: {visitor_input}
 Tour Guide:"""
 
 prompt = PromptTemplate(
-    input_variables=["chat_history", "visitor_input"], 
-    template=template
+    input_variables=["chat_history", "visitor_input"], template=template
 )
 
-chat_history=""
+chat_history = ""
 
 convo_buffer_win = ConversationChain(
-    llm=llm,
-    memory = ConversationBufferWindowMemory(k=3, return_messages=True)
+    llm=llm, memory=ConversationBufferWindowMemory(k=3, return_messages=True)
 )
 
 """
@@ -69,4 +68,3 @@ convo_buffer_win("What can you do?")
 convo_buffer_win("Do you mind give me a tour, I want to see your galery?")
 convo_buffer_win("what is your working hours?")
 print(convo_buffer_win("See you soon."))
-

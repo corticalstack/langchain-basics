@@ -15,8 +15,13 @@ Current conversation:
 
 conversation = ConversationChain(
     llm=llm,
-    prompt=PromptTemplate(template=template, input_variables=["history", "input"], output_parser=output_parser),
+    prompt=PromptTemplate(
+        template=template,
+        input_variables=["history", "input"],
+        output_parser=output_parser,
+    ),
     memory=ConversationBufferMemory(),
-    verbose=True)
+    verbose=True,
+)
 
 conversation.predict(input="")

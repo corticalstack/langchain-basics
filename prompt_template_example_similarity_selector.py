@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 """
@@ -54,14 +55,16 @@ similar_prompt = FewShotPromptTemplate(
     example_selector=example_selector,
     example_prompt=example_prompt,
     prefix="Convert the temperature from Celsius to Fahrenheit",
-    suffix="Input: {temperature}\nOutput:", 
+    suffix="Input: {temperature}\nOutput:",
     input_variables=["temperature"],
 )
 
 # Test the similar_prompt with different inputs
-print(similar_prompt.format(temperature="10°C"))   # Test with an input
+print(similar_prompt.format(temperature="10°C"))  # Test with an input
 print(similar_prompt.format(temperature="30°C"))  # Test with another input
 
 # Add a new example to the SemanticSimilarityExampleSelector
 similar_prompt.example_selector.add_example({"input": "50°C", "output": "122°F"})
-print(similar_prompt.format(temperature="40°C")) # Test with a new input after adding the example
+print(
+    similar_prompt.format(temperature="40°C")
+)  # Test with a new input after adding the example

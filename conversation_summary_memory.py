@@ -42,9 +42,7 @@ llm = OpenAI(model_name="text-davinci-003", temperature=0)
 
 # Create a ConversationChain with ConversationSummaryMemory
 conversation_with_summary = ConversationChain(
-    llm=llm, 
-    memory=ConversationSummaryMemory(llm=llm),
-    verbose=True
+    llm=llm, memory=ConversationSummaryMemory(llm=llm), verbose=True
 )
 
 # Example conversation
@@ -71,13 +69,14 @@ llm = OpenAI(temperature=0)
 conversation_with_summary = ConversationChain(
     llm=llm,
     memory=ConversationSummaryBufferMemory(llm=OpenAI(), max_token_limit=40),
-    verbose=True
+    verbose=True,
 )
 conversation_with_summary.predict(input="Hi, what's up?")
 conversation_with_summary.predict(input="Just working on writing some documentation!")
-response = conversation_with_summary.predict(input="For LangChain! Have you heard of it?")
+response = conversation_with_summary.predict(
+    input="For LangChain! Have you heard of it?"
+)
 print(response)
-
 
 
 """

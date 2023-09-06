@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 """
@@ -13,7 +14,9 @@ from langchain.output_parsers import StructuredOutputParser, ResponseSchema
 
 response_schemas = [
     ResponseSchema(name="words", description="A substitute word based on context"),
-    ResponseSchema(name="reasons", description="the reasoning of why this word fits the context.")
+    ResponseSchema(
+        name="reasons", description="the reasoning of why this word fits the context."
+    ),
 ]
 
 parser = StructuredOutputParser.from_response_schemas(response_schemas)

@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+
 load_dotenv()
 
 from langchain import PromptTemplate, OpenAI, LLMChain
@@ -15,10 +16,7 @@ this section is creating a bot that can suggest a replacement word based on cont
 demonstrates the utilization of the GPT-3 model through the OpenAI API. It generates a prompt using the 
 PromptTemplate from LangChain, and finally, the LLMChain class ties all the components. 
 """
-llm_chain = LLMChain(
-    llm=llm,
-    prompt=PromptTemplate.from_template(prompt_template)
-)
+llm_chain = LLMChain(llm=llm, prompt=PromptTemplate.from_template(prompt_template))
 
 
 """
@@ -33,11 +31,7 @@ It is also possible to use the .apply() method to pass multiple inputs at once a
 each input. The sole difference lies in the exclusion of inputs within the returned list. Nonetheless, 
 the returned list will maintain the identical order as the input.
 """
-input_list = [
-    {"word": "artificial"},
-    {"word": "intelligence"},
-    {"word": "robot"}
-]
+input_list = [{"word": "artificial"}, {"word": "intelligence"}, {"word": "robot"}]
 
 print(llm_chain.apply(input_list))
 
@@ -60,7 +54,10 @@ prompt_template = "Looking at the context of '{context}'. What is an appropriate
 
 llm_chain = LLMChain(
     llm=llm,
-    prompt=PromptTemplate(template=prompt_template, input_variables=["word", "context"]))
+    prompt=PromptTemplate(
+        template=prompt_template, input_variables=["word", "context"]
+    ),
+)
 
 print(llm_chain.predict(word="fan", context="object"))
 # or llm_chain.run(word="fan", context="object")
@@ -71,4 +68,3 @@ objects. Furthermore, when we repeat the experiment with a different context, hu
 """
 print(llm_chain.predict(word="fan", context="humans"))
 # or llm_chain.run(word="fan", context="humans")
-

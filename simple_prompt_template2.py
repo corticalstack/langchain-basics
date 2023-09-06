@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+
 load_dotenv()
 
 from langchain import LLMChain, PromptTemplate
@@ -24,16 +25,15 @@ input_variables: A list of variable names in the template; in this case, it incl
 template: The template string containing formatted text and placeholders.
 """
 
-prompt_template = PromptTemplate(
-    input_variables=["query"],
-    template=template
-)
+prompt_template = PromptTemplate(input_variables=["query"], template=template)
 
 # Create the LLMChain for the prompt
 chain = LLMChain(llm=llm, prompt=prompt_template)
 
 # Set the query you want to ask
-input_data = {"query": "What is the main advantage of quantum computing over classical computing?"}
+input_data = {
+    "query": "What is the main advantage of quantum computing over classical computing?"
+}
 
 # Run the LLMChain to get the AI-generated answer
 response = chain.run(input_data)

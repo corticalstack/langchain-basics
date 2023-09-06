@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 """
@@ -27,8 +28,9 @@ output = conversation.predict(input="Hi there!")
 print(output)
 
 output = conversation.predict(input="In what scenarios extra memory should be used?")
-output = conversation.predict(input="There are various types of memory in Langchain. When to use which type?")
+output = conversation.predict(
+    input="There are various types of memory in Langchain. When to use which type?"
+)
 output = conversation.predict(input="Do you remember what was our first message?")
 
 print(output)
-

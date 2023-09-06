@@ -24,7 +24,7 @@ will be most informative for the language model.
 examples = [
     {"animal": "lion", "habitat": "savanna"},
     {"animal": "polar bear", "habitat": "Arctic ice"},
-    {"animal": "elephant", "habitat": "African grasslands"}
+    {"animal": "elephant", "habitat": "African grasslands"},
 ]
 
 example_template = """
@@ -33,8 +33,7 @@ Habitat: {habitat}
 """
 
 example_prompt = PromptTemplate(
-    input_variables=["animal", "habitat"],
-    template=example_template
+    input_variables=["animal", "habitat"], template=example_template
 )
 
 dynamic_prompt = FewShotPromptTemplate(
@@ -60,8 +59,8 @@ example_prompt.save("awesome_prompt.json")
 
 # And load it back from the file:
 from langchain.prompts import load_prompt
+
 loaded_prompt = load_prompt("awesome_prompt.json")
 
 dynamic_prompt.save("awesome_dynamic_prompt.json")
 loaded_dynamic_prompt = load_prompt("awesome_dynamic_prompt.json")
-

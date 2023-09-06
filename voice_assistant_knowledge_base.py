@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 import requests
@@ -12,43 +13,49 @@ import re
 
 my_activeloop_org_id = os.environ["ACTIVELOOP_ORG_ID"]
 my_activeloop_dataset_name = "langchain_course_jarvis_assistant"
-dataset_path= 'hub://' + my_activeloop_org_id + '/' + my_activeloop_dataset_name
+dataset_path = "hub://" + my_activeloop_org_id + "/" + my_activeloop_dataset_name
 print(dataset_path)
 
-embeddings =  OpenAIEmbeddings(model_name="text-embedding-ada-002")
+embeddings = OpenAIEmbeddings(model_name="text-embedding-ada-002")
+
 
 def get_documentation_urls():
     # List of relative URLs for Hugging Face documentation pages, commented a lot of these because it would take too long to scrape all of them
     return [
-		    '/docs/huggingface_hub/guides/overview',
-		    '/docs/huggingface_hub/guides/download',
-		    '/docs/huggingface_hub/guides/upload',
-		    '/docs/huggingface_hub/guides/hf_file_system',
-		    '/docs/huggingface_hub/guides/repository',
-		    '/docs/huggingface_hub/guides/search',
-		    # You may add additional URLs here or replace all of them
+        "/docs/huggingface_hub/guides/overview",
+        "/docs/huggingface_hub/guides/download",
+        "/docs/huggingface_hub/guides/upload",
+        "/docs/huggingface_hub/guides/hf_file_system",
+        "/docs/huggingface_hub/guides/repository",
+        "/docs/huggingface_hub/guides/search",
+        # You may add additional URLs here or replace all of them
     ]
+
 
 def construct_full_url(base_url, relative_url):
     # Construct the full URL by appending the relative URL to the base URL
     return base_url + relative_url
+
 
 """
 Aggregate all the scraped content from the URLs. This is achieved with the scrape_all_content() 
 function, which iteratively calls scrape_page_content() for each URL and extracts its text. This 
 collected text is then saved to a file.
 """
+
+
 def scrape_page_content(url):
     # Send a GET request to the URL and parse the HTML response using BeautifulSoup
     response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
+    soup = BeautifulSoup(response.text, "html.parser")
     # Extract the desired content from the page (in this case, the body text)
-    text=soup.body.text.strip()
+    text = soup.body.text.strip()
     # Remove non-ASCII characters
-    text = re.sub(r'[\x00-\x08\x0b-\x0c\x0e-\x1f\x7f-\xff]', '', text)
+    text = re.sub(r"[\x00-\x08\x0b-\x0c\x0e-\x1f\x7f-\xff]", "", text)
     # Remove extra whitespace and newlines
-    text = re.sub(r'\s+', ' ', text)
+    text = re.sub(r"\s+", " ", text)
     return text.strip()
+
 
 def scrape_all_content(base_url, relative_urls, filename):
     # Loop through the list of URLs, scrape content and add it to the content list
@@ -56,14 +63,15 @@ def scrape_all_content(base_url, relative_urls, filename):
     for relative_url in relative_urls:
         full_url = construct_full_url(base_url, relative_url)
         scraped_content = scrape_page_content(full_url)
-        content.append(scraped_content.rstrip('\n'))
+        content.append(scraped_content.rstrip("\n"))
 
     # Write the scraped content to a file
-    with open(filename, 'w', encoding='utf-8') as file:
+    with open(filename, "w", encoding="utf-8") as file:
         for item in content:
             file.write("%s\n" % item)
-    
+
     return content
+
 
 """
 To prepare the collected text for embedding into our vector database, we load the content from the 
@@ -76,14 +84,15 @@ an instance of a text splitter that splits the text into chunks based on charact
 in docs is split into chunks of approximately 1000 characters, with no overlap between consecutive 
 chunks.
 """
+
+
 # Define a function to load documents from a file
-def load_docs(root_dir,filename):
+def load_docs(root_dir, filename):
     # Create an empty list to hold the documents
     docs = []
     try:
         # Load the file using the TextLoader class and UTF-8 encoding
-        loader = TextLoader(os.path.join(
-            root_dir, filename), encoding='utf-8')
+        loader = TextLoader(os.path.join(root_dir, filename), encoding="utf-8")
         # Split the loaded file into separate documents and add them to the list of documents
         docs.extend(loader.load_and_split())
     except Exception as e:
@@ -91,10 +100,12 @@ def load_docs(root_dir,filename):
         pass
     # Return the list of documents
     return docs
-  
+
+
 def split_docs(docs):
     text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
     return text_splitter.split_documents(docs)
+
 
 """
 Once we've collected the necessary articles, the next step is to embed them using Deep Lake. 
@@ -112,18 +123,20 @@ All these steps are neatly wrapped into our main function. This sets the necessa
 the functions we've defined, and oversees the overall process from scraping the content from the web 
 to loading it into the Deep Lake database. As a final step, it deletes the content file to clean up.
 """
+
+
 # Define the main function
 def main():
-    base_url = 'https://huggingface.co'
+    base_url = "https://huggingface.co"
     # Set the name of the file to which the scraped content will be saved
-    filename='content.txt'
+    filename = "content.txt"
     # Set the root directory where the content file will be saved
-    root_dir ='./'
+    root_dir = "./"
     relative_urls = get_documentation_urls()
     # Scrape all the content from the relative URLs and save it to the content file
-    content = scrape_all_content(base_url, relative_urls,filename)
+    content = scrape_all_content(base_url, relative_urls, filename)
     # Load the content from the file
-    docs = load_docs(root_dir,filename)
+    docs = load_docs(root_dir, filename)
     # Split the content into individual documents
     texts = split_docs(docs)
     # Create a DeepLake database with the given dataset path and embedding function
@@ -134,7 +147,7 @@ def main():
     # Clean up by deleting the content file
     os.remove(filename)
 
-# Call the main function if this script is being run as the main program
-if __name__ == '__main__':
-    main()
 
+# Call the main function if this script is being run as the main program
+if __name__ == "__main__":
+    main()

@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+
 load_dotenv()
 
 from langchain import PromptTemplate, FewShotPromptTemplate, LLMChain
@@ -34,7 +35,9 @@ few_shot_prompt = FewShotPromptTemplate(
 formatted_prompt = few_shot_prompt.format(input="purple")
 
 # Create the LLMChain for the prompt
-chain = LLMChain(llm=llm, prompt=PromptTemplate(template=formatted_prompt, input_variables=[]))
+chain = LLMChain(
+    llm=llm, prompt=PromptTemplate(template=formatted_prompt, input_variables=[])
+)
 
 # Run the LLMChain to get the AI-generated emotion associated with the input color
 response = chain.run({})

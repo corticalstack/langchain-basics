@@ -1,8 +1,10 @@
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 from langchain.document_loaders import PyPDFLoader
+
 loader = PyPDFLoader("The One Page Linux Manual.pdf")
 pages = loader.load_and_split()
 
@@ -13,7 +15,6 @@ texts = text_splitter.split_documents(pages)
 
 print(texts[0])
 
-print (f"You have {len(texts)} documents")
-print ("Preview:")
-print (texts[0].page_content)
-
+print(f"You have {len(texts)} documents")
+print("Preview:")
+print(texts[0].page_content)

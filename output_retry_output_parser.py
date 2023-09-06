@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 from langchain.llms import OpenAI
@@ -8,10 +9,14 @@ from langchain.output_parsers import PydanticOutputParser
 from pydantic import BaseModel, Field
 from typing import List
 
+
 # Define data structure.
 class Suggestions(BaseModel):
     words: List[str] = Field(description="list of substitute words based on context")
-    reasons: List[str] = Field(description="the reasoning of why this word fits the context")
+    reasons: List[str] = Field(
+        description="the reasoning of why this word fits the context"
+    )
+
 
 parser = PydanticOutputParser(pydantic_object=Suggestions)
 
@@ -26,13 +31,16 @@ context={context}
 prompt = PromptTemplate(
     template=template,
     input_variables=["target_word", "context"],
-    partial_variables={"format_instructions": parser.get_format_instructions()}
+    partial_variables={"format_instructions": parser.get_format_instructions()},
 )
 
-model_input = prompt.format_prompt(target_word="behaviour", context="The behaviour of the students in the classroom was disruptive and made it difficult for the teacher to conduct the lesson.")
+model_input = prompt.format_prompt(
+    target_word="behaviour",
+    context="The behaviour of the students in the classroom was disruptive and made it difficult for the teacher to conduct the lesson.",
+)
 
 # Define Model
-model = OpenAI(model_name='text-davinci-003', temperature=0.0)
+model = OpenAI(model_name="text-davinci-003", temperature=0.0)
 
 from langchain.output_parsers import RetryWithErrorOutputParser
 

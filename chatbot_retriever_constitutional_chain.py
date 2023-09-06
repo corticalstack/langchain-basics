@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 """
@@ -13,24 +14,24 @@ import newspaper
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 documents = [
-    'https://python.langchain.com/docs/get_started/introduction',
-    'https://python.langchain.com/docs/get_started/quickstart',
-    'https://python.langchain.com/docs/modules/model_io/models/',
-    'https://python.langchain.com/docs/modules/model_io/prompts/prompt_templates/'
+    "https://python.langchain.com/docs/get_started/introduction",
+    "https://python.langchain.com/docs/get_started/quickstart",
+    "https://python.langchain.com/docs/modules/model_io/models/",
+    "https://python.langchain.com/docs/modules/model_io/prompts/prompt_templates/",
 ]
 
 pages_content = []
 
 # Retrieve the Content
 for url in documents:
-	try:
-		article = newspaper.Article( url )
-		article.download()
-		article.parse()
-		if len(article.text) > 0:
-			pages_content.append({ "url": url, "text": article.text })
-	except:
-		continue
+    try:
+        article = newspaper.Article(url)
+        article.download()
+        article.parse()
+        if len(article.text) > 0:
+            pages_content.append({"url": url, "text": article.text})
+    except:
+        continue
 
 # Split to Chunks
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
@@ -40,8 +41,8 @@ for document in pages_content:
     chunks = text_splitter.split_text(document["text"])
     for chunk in chunks:
         all_texts.append(chunk)
-        all_metadatas.append({ "source": document["url"] })
-	
+        all_metadatas.append({"source": document["url"]})
+
 from langchain.vectorstores import DeepLake
 from langchain.embeddings.openai import OpenAIEmbeddings
 
@@ -66,9 +67,9 @@ from langchain import OpenAI
 
 llm = OpenAI(model_name="text-davinci-003", temperature=0)
 
-chain = RetrievalQAWithSourcesChain.from_chain_type(llm=llm,
-                                                    chain_type="stuff",
-                                                    retriever=db.as_retriever())
+chain = RetrievalQAWithSourcesChain.from_chain_type(
+    llm=llm, chain_type="stuff", retriever=db.as_retriever()
+)
 
 """
 The following query is an example of a good response from the model. It successfully finds 
@@ -141,9 +142,7 @@ Now, we can initilize the constitutional chain using the identitiy chain with th
 """
 # create consitutional chain
 constitutional_chain = ConstitutionalChain.from_llm(
-    chain=identity_chain,
-    constitutional_principles=[polite_principle],
-    llm=llm
+    chain=identity_chain, constitutional_principles=[polite_principle], llm=llm
 )
 
 revised_response = constitutional_chain.run(text=d_response_not_ok["answer"])

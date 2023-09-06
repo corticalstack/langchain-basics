@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 """
@@ -17,10 +18,14 @@ from langchain.output_parsers import PydanticOutputParser
 from pydantic import BaseModel, Field
 from typing import List
 
+
 # Define your desired data structure.
 class Suggestions(BaseModel):
     words: List[str] = Field(description="list of substitue words based on context")
-    reasons: List[str] = Field(description="the reasoning of why this word fits the context")
+    reasons: List[str] = Field(
+        description="the reasoning of why this word fits the context"
+    )
+
 
 try:
     parser = PydanticOutputParser(pydantic_object=Suggestions)
@@ -40,7 +45,7 @@ OutputFixingParser class could easily fix this error.
 from langchain.llms import OpenAI
 from langchain.output_parsers import OutputFixingParser
 
-model = OpenAI(model_name='text-davinci-003', temperature=0.0)
+model = OpenAI(model_name="text-davinci-003", temperature=0.0)
 
 outputfixing_parser = OutputFixingParser.from_llm(parser=parser, llm=model)
 print(outputfixing_parser.parse(missformatted_output))

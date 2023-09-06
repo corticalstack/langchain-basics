@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 """ 
@@ -9,18 +10,20 @@ sudo apt install ffmpeg
 
 import yt_dlp
 
+
 def download_mp4_from_youtube(url):
     # Set the options for the download
-    filename = 'lecuninterview.mp4'
+    filename = "lecuninterview.mp4"
     ydl_opts = {
-        'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]',
-        'outtmpl': filename,
-        'quiet': True,
+        "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]",
+        "outtmpl": filename,
+        "quiet": True,
     }
 
     # Download the video file
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         result = ydl.extract_info(url, download=True)
+
 
 url = "https://www.youtube.com/watch?v=mBjPyte2ZZo"
 if os.path.exists("lecuninterview.mp4"):
@@ -51,11 +54,11 @@ else:
     model = whisper.load_model("base")
     result = model.transcribe("lecuninterview.mp4")
     print("=== Transcribed video text ===")
-    print(result['text'])
+    print(result["text"])
 
     # We’ve got the result in the form of a raw text and it is possible to save it to a text file.
-    with open ('lecuninterview_transcribed.txt', 'w') as file:  
-        file.write(result['text'])
+    with open("lecuninterview_transcribed.txt", "w") as file:
+        file.write(result["text"])
 
 # Now summarize with LangChain
 from langchain import OpenAI, LLMChain
@@ -97,7 +100,7 @@ https://docs.python.org/3/library/textwrap.html
 """
 from langchain.docstore.document import Document
 
-with open('lecuninterview_transcribed.txt') as f:
+with open("lecuninterview_transcribed.txt") as f:
     text = f.read()
 
 texts = text_splitter.split_text(text)
@@ -139,23 +142,19 @@ prompt_template = """Write a concise bullet point summary of the following:
 
 CONSCISE SUMMARY IN BULLET POINTS:"""
 
-BULLET_POINT_PROMPT = PromptTemplate(template=prompt_template, 
-                        input_variables=["text"])
+BULLET_POINT_PROMPT = PromptTemplate(template=prompt_template, input_variables=["text"])
 
 
 """
 Also, we initialized the summarization chain using the stuff as chain_type and the prompt above.
 """
-chain = load_summarize_chain(llm, 
-                             chain_type="stuff", 
-                             prompt=BULLET_POINT_PROMPT)
+chain = load_summarize_chain(llm, chain_type="stuff", prompt=BULLET_POINT_PROMPT)
 
 output_summary = chain.run(docs)
 
-wrapped_text = textwrap.fill(output_summary, 
-                             width=1000,
-                             break_long_words=False,
-                             replace_whitespace=False)
+wrapped_text = textwrap.fill(
+    output_summary, width=1000, break_long_words=False, replace_whitespace=False
+)
 print("=== Summary text from stuff ===")
 print(wrapped_text)
 
@@ -197,37 +196,41 @@ First, we need to modify the script for video downloading slightly, so it can wo
 print("=== Batch videos ===")
 import yt_dlp
 
+
 def download_mp4_from_youtube(urls, job_id):
     # This will hold the titles and authors of each downloaded video
     video_info = []
 
     for i, url in enumerate(urls):
         # Set the options for the download
-        file_temp = f'./{job_id}_{i}.mp4'
+        file_temp = f"./{job_id}_{i}.mp4"
         ydl_opts = {
-            'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]',
-            'outtmpl': file_temp,
-            'quiet': True,
+            "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]",
+            "outtmpl": file_temp,
+            "quiet": True,
         }
 
         # Download the video file
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             result = ydl.extract_info(url, download=True)
-            title = result.get('title', "")
-            author = result.get('uploader', "")
+            title = result.get("title", "")
+            author = result.get("uploader", "")
 
         # Add the title and author to our list
         video_info.append((file_temp, title, author))
 
     return video_info
 
+
 if os.path.exists("1_0.mp4") and os.path.exists("1_1.mp4"):
     print("Video files already exist")
     video_details = [("1_0.mp4"), ("1_1.mp4")]
     print(video_details)
 else:
-    urls=["https://www.youtube.com/watch?v=mBjPyte2ZZo&t=78s",
-        "https://www.youtube.com/watch?v=cjs7QKJNVYM",]
+    urls = [
+        "https://www.youtube.com/watch?v=mBjPyte2ZZo&t=78s",
+        "https://www.youtube.com/watch?v=cjs7QKJNVYM",
+    ]
     video_details = download_mp4_from_youtube(urls, 1)
     print(video_details)
 
@@ -246,11 +249,11 @@ results = []
 for video in video_details:
     print("Video:", video)
     result = model.transcribe(video)
-    results.append( result['text'] )
+    results.append(result["text"])
     print(f"Transcription for {video[0]}:\n{result['text']}\n")
 
-with open ('batch_videos_transcribed.txt', 'w') as file:
-    combined = ' '.join(results)  
+with open("batch_videos_transcribed.txt", "w") as file:
+    combined = " ".join(results)
     file.write(combined)
 
 
@@ -263,14 +266,14 @@ with zero overlap before we store them in Deep Lake.
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 # Load the texts
-with open('batch_videos_transcribed.txt') as f:
+with open("batch_videos_transcribed.txt") as f:
     text = f.read()
 texts = text_splitter.split_text(text)
 
 # Split the documents
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=1000, chunk_overlap=0, separators=[" ", ",", "\n"]
-    )
+)
 texts = text_splitter.split_text(text)
 
 
@@ -284,7 +287,7 @@ docs = [Document(page_content=t) for t in texts[:4]]
 from langchain.vectorstores import DeepLake
 from langchain.embeddings.openai import OpenAIEmbeddings
 
-embeddings = OpenAIEmbeddings(model='text-embedding-ada-002')
+embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
 
 my_activeloop_org_id = os.environ["ACTIVELOOP_ORG_ID"]
 my_activeloop_dataset_name = "langchain_course_youtube_summarizer"
@@ -298,8 +301,8 @@ db.add_documents(docs)
 In order to retrieve the information from the database, we’d have to construct a retriever object.
 """
 retriever = db.as_retriever()
-retriever.search_kwargs['distance_metric'] = 'cos'
-retriever.search_kwargs['k'] = 4
+retriever.search_kwargs["distance_metric"] = "cos"
+retriever.search_kwargs["k"] = 4
 
 
 """
@@ -317,6 +320,7 @@ custom prompt ability gives us the flexibility to define custom tasks like retri
 summaizing the results in a bullet-point style.
 """
 from langchain.prompts import PromptTemplate
+
 prompt_template = """Use the following pieces of transcripts from a video to answer the question in bullet points and summarized. If you don't know the answer, just say that you don't know, don't try to make up an answer.
 
 {context}
@@ -342,10 +346,11 @@ print("=== Retrieve from deep lake ===")
 from langchain.chains import RetrievalQA
 
 chain_type_kwargs = {"prompt": PROMPT}
-qa = RetrievalQA.from_chain_type(llm=llm,
-                                 chain_type="stuff",
-                                 retriever=retriever,
-                                 chain_type_kwargs=chain_type_kwargs)
+qa = RetrievalQA.from_chain_type(
+    llm=llm,
+    chain_type="stuff",
+    retriever=retriever,
+    chain_type_kwargs=chain_type_kwargs,
+)
 
 print(qa.run("Summarize the mentions of google according to their AI program"))
-

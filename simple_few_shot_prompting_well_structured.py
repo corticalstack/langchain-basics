@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+
 load_dotenv()
 
 """
@@ -35,11 +36,12 @@ llm = OpenAI(model_name="text-davinci-003", temperature=0)
 examples = [
     {
         "query": "What's the secret to happiness?",
-        "answer": "Finding balance in life and learning to enjoy the small moments."
-    }, {
+        "answer": "Finding balance in life and learning to enjoy the small moments.",
+    },
+    {
         "query": "How can I become more productive?",
-        "answer": "Try prioritizing tasks, setting goals, and maintaining a healthy work-life balance."
-    }
+        "answer": "Try prioritizing tasks, setting goals, and maintaining a healthy work-life balance.",
+    },
 ]
 
 example_template = """
@@ -48,8 +50,7 @@ AI: {answer}
 """
 
 example_prompt = PromptTemplate(
-    input_variables=["query", "answer"],
-    template=example_template
+    input_variables=["query", "answer"], template=example_template
 )
 
 prefix = """The following are excerpts from conversations with an AI
@@ -67,7 +68,7 @@ few_shot_prompt_template = FewShotPromptTemplate(
     prefix=prefix,
     suffix=suffix,
     input_variables=["query"],
-    example_separator="\n\n"
+    example_separator="\n\n",
 )
 
 # Create the LLMChain for the few-shot prompt template

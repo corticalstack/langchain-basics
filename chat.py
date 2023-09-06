@@ -14,17 +14,17 @@ TEMP_AUDIO_PATH = "temp_audio.wav"
 AUDIO_FORMAT = "audio/wav"
 
 # Load environment variables from .env file and return the keys
-openai.api_key = os.environ.get('OPENAI_API_KEY')
-eleven_api_key = os.environ.get('ELEVEN_API_KEY')
+openai.api_key = os.environ.get("OPENAI_API_KEY")
+eleven_api_key = os.environ.get("ELEVEN_API_KEY")
+
 
 def load_embeddings_and_database(active_loop_data_set_path):
     embeddings = OpenAIEmbeddings()
     db = DeepLake(
-        dataset_path=active_loop_data_set_path,
-        read_only=True,
-        embedding=embeddings
+        dataset_path=active_loop_data_set_path, read_only=True, embedding=embeddings
     )
     return db
+
 
 # Transcribe audio using OpenAI Whisper API
 def transcribe_audio(audio_file_path, openai_key):
@@ -36,7 +36,8 @@ def transcribe_audio(audio_file_path, openai_key):
     except Exception as e:
         print(f"Error calling Whisper API: {str(e)}")
         return None
-    
+
+
 # Record audio using audio_recorder and transcribe using transcribe_audio
 def record_and_transcribe_audio():
     audio_bytes = audio_recorder()
@@ -54,6 +55,7 @@ def record_and_transcribe_audio():
 
     return transcription
 
+
 # Display the transcription of the audio on the app
 def display_transcription(transcription):
     if transcription:
@@ -62,6 +64,7 @@ def display_transcription(transcription):
             f.write(transcription)
     else:
         st.write("Error transcribing audio.")
+
 
 # Get user input from Streamlit text input field
 def get_user_input(transcription):
@@ -72,32 +75,32 @@ def get_user_input(transcription):
 def search_db(user_input, db):
     print(user_input)
     retriever = db.as_retriever()
-    retriever.search_kwargs['distance_metric'] = 'cos'
-    retriever.search_kwargs['fetch_k'] = 100
-    retriever.search_kwargs['maximal_marginal_relevance'] = True
-    retriever.search_kwargs['k'] = 4
-    model = ChatOpenAI(model_name='gpt-3.5-turbo')
+    retriever.search_kwargs["distance_metric"] = "cos"
+    retriever.search_kwargs["fetch_k"] = 100
+    retriever.search_kwargs["maximal_marginal_relevance"] = True
+    retriever.search_kwargs["k"] = 4
+    model = ChatOpenAI(model_name="gpt-3.5-turbo")
     qa = RetrievalQA.from_llm(model, retriever=retriever, return_source_documents=True)
-    return qa({'query': user_input})
+    return qa({"query": user_input})
 
 
 # Display conversation history using Streamlit messages
 def display_conversation(history):
     for i in range(len(history["generated"])):
         message(history["past"][i], is_user=True, key=str(i) + "_user")
-        message(history["generated"][i],key=str(i))
-        #Voice using Eleven API
-        voice= "Bella"
-        text= history["generated"][i]
-        audio = generate(text=text, voice=voice,api_key=eleven_api_key)
-        st.audio(audio, format='audio/mp3')
+        message(history["generated"][i], key=str(i))
+        # Voice using Eleven API
+        voice = "Bella"
+        text = history["generated"][i]
+        audio = generate(text=text, voice=voice, api_key=eleven_api_key)
+        st.audio(audio, format="audio/mp3")
 
 
 # Main function to run the app
 def main():
     # Initialize Streamlit app with a title
     st.write("# JarvisBase 🧙")
-   
+
     # Load embeddings and the DeepLake database
     db = load_embeddings_and_database(dataset_path)
 
@@ -112,20 +115,20 @@ def main():
         st.session_state["generated"] = ["I am ready to help you"]
     if "past" not in st.session_state:
         st.session_state["past"] = ["Hey there!"]
-        
+
     # Search the database for a response based on user input and update the session state
     if user_input:
         output = search_db(user_input, db)
-        print(output['source_documents'])
+        print(output["source_documents"])
         st.session_state.past.append(user_input)
         response = str(output["result"])
         st.session_state.generated.append(response)
 
-    #Display conversation history using Streamlit messages
+    # Display conversation history using Streamlit messages
     if st.session_state["generated"]:
         display_conversation(st.session_state)
+
 
 # Run the main function when the script is executed
 if __name__ == "__main__":
     main()
-

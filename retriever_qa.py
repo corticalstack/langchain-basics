@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 from langchain.document_loaders import TextLoader
@@ -112,9 +113,7 @@ from langchain.llms import OpenAI
 
 # create a retrieval chain
 qa_chain = RetrievalQA.from_chain_type(
-	llm=OpenAI(model="text-davinci-003"),
-	chain_type="stuff",
-	retriever=retriever
+    llm=OpenAI(model="text-davinci-003"), chain_type="stuff", retriever=retriever
 )
 
 # We can query our document that is an about specific topic that can be found in the documents.
@@ -182,14 +181,13 @@ llm = OpenAI(model="text-davinci-003", temperature=0)
 # create compressor for the retriever
 compressor = LLMChainExtractor.from_llm(llm)
 compression_retriever = ContextualCompressionRetriever(
-	base_compressor=compressor,
-	base_retriever=retriever
+    base_compressor=compressor, base_retriever=retriever
 )
 
 # Once we have created the compression_retriever, we can use it to retrieve the compressed relevant documents to a query.
 # retrieving compressed documents
 retrieved_docs = compression_retriever.get_relevant_documents(
-	"How Google plans to challenge OpenAI?"
+    "How Google plans to challenge OpenAI?"
 )
 print(retrieved_docs[0].page_content)
 
